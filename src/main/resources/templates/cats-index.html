@@ -9,7 +9,22 @@
 <body>
 <div class="container">
     <h3>Cats available:</h3>
-
+<!--    <p th:text="${test}"></p>-->
+<!--    <p th:text="${cat.nickname}"></p>-->
+<!--    <p th:text="${cat.id}"></p>-->
+    <table class="table table-hover">
+    <tr class="table-danger">
+        <th>ID</th>
+        <th>NAME</th>
+    </tr>
+        <tr th:each="cat: ${cats}" class="table-danger">
+            <td th:text="${cat.id}"/>
+            <td th:text="${cat.nickname}"/>
+    </tr>
+    </table>
+    <div>
+        <a th:href="@{/cats/add}" class="btn btn-primary btn-lg btn-block">Add Cat!</a>
+    </div>
 </div>
 </body>
 </html>
