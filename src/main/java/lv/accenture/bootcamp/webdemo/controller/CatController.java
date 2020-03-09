@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CatController {
@@ -21,13 +22,7 @@ public class CatController {
 
     @GetMapping("/cats")
     public String catIndex(Model model) {
-//        model.addAttribute("test", "it works!");
-//        Cat cat = new Cat(1L, "Muris");
-//        model.addAttribute("cat", cat);
-//        model.addAttribute("id", cat);
-        List<Cat> cats = catRepository.findAll();
-        model.addAttribute("test", "it works!");
-        Cat cat = new Cat(1L, "Muris", "3", "https://tinyurl.com/yxxofdoh");
+        Iterable<Cat> cats = catRepository.findAll();
         model.addAttribute("cats", cats);
         return "cats-index";
     }
@@ -40,15 +35,15 @@ public class CatController {
 
     @PostMapping("/cats/add-cat")
     public String addCat(Cat catToAdd) {
-        catRepository.add(catToAdd);
+        catRepository.save(catToAdd);
         return "redirect:/cats";
     }
 
     @GetMapping("/cats/edit/{id}") //{id} - dinamiskais parametrs
     public String editCatPage(@PathVariable Long id, Model model) {
         // @PathVariable Long id // Spring anotacija @PathVariable pasaka, ka Long id vertiba ir ta, ko mes dabujam no {id}
-        Cat catToEdit = catRepository.findById(id);
-        model.addAttribute("cat", catToEdit);
+        Optional<Cat> catToEdit = catRepository.findById(id);
+        model.addAttribute("cat", catToEdit.get());
         return "edit-cat";
     }
 
@@ -57,14 +52,14 @@ public class CatController {
         editedCat.setId(id);
         System.out.println("Changed id: " + editedCat.getId());
         System.out.println("Changed nickname: " + editedCat.getNickname());
-        catRepository.update(editedCat);
+        catRepository.save(editedCat);
         return "redirect:/cats";
     }
 
     @GetMapping("/cats/delete/{id}") //{id} - dinamiskais parametrs
     public String deleteCat(@PathVariable Long id) {
         // @PathVariable Long id // Spring anotacija @PathVariable pasaka, ka Long id vertiba ir ta, ko mes dabujam no {id}
-        catRepository.delete(id);
+        catRepository.deleteById(id);
         return "redirect:/cats";
     }
     @GetMapping("/cats/search")
