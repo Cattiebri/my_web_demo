@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,10 @@ public class CatController {
     }
 
     @PostMapping("/cats/add-cat")
-    public String addCat(Cat catToAdd) {
+    public String addCat(@Valid Cat catToAdd, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return "add-cat";
+        }
         catRepository.save(catToAdd);
         return "redirect:/cats";
     }
@@ -48,7 +53,10 @@ public class CatController {
     }
 
     @PostMapping("/cats/edit-cat/{id}")
-    public String editCat(@PathVariable Long id, Cat editedCat) {
+    public String editCat(@PathVariable Long id, Cat editedCat, @Valid Cat catToEdit, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return "edit-cat";
+        }
         editedCat.setId(id);
         System.out.println("Changed id: " + editedCat.getId());
         System.out.println("Changed nickname: " + editedCat.getNickname());
